@@ -51,10 +51,11 @@ ideaToSrcSpan idea = case HLint.unpackSrcSpan $ HLint.ideaSpan idea of
         (Plugins.mkSrcLoc fastString endLine endColumn)
 
 ideaToSDoc :: HLint.Idea -> Error.SDoc
-ideaToSDoc idea = Plugins.vcat
+ideaToSDoc idea = Plugins.hcat
   [ Plugins.text $ HLint.ideaHint idea
   , case HLint.ideaTo idea of
-    Just to | not $ null to -> Plugins.text $ "Perhaps: " <> to
+    Just to | not $ null to -> Plugins.text $ ", Perhaps: " <> to
+            | to == "Redundant bracket" -> Plugins.text ", Consider removing it"
     _ -> Plugins.empty
   , Plugins.vcat
   . fmap (Plugins.text . mappend "Note: " . show)
